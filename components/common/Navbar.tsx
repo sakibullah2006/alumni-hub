@@ -31,6 +31,7 @@ import { LoadingButton } from "./LoadingButton";
 import { useState } from "react";
 import { cn } from "../../lib/utils";
 import { usePathname, useRouter } from "next/navigation";
+import { NavbarSkeleton } from "../skeletons/navbar-skeleton";
 
 interface MenuItem {
     title: string;
@@ -68,7 +69,7 @@ const Navbar = ({
         title: "Alumni Hub",
     },
     menu = [
-        { title: "Home", url: "#" },
+        { title: "Home", url: ROUTES.HOME },
         {
             title: "Discover",
             url: ROUTES.ALUMNIES,
@@ -97,7 +98,7 @@ const Navbar = ({
         signup: { title: "Sign up", url: pathname.length > 1 ? `${ROUTES.SIGNUP}?redirect_url=${encodeURIComponent(pathname)}` : ROUTES.SIGNUP },
     }
 
-    if (!isLoaded) return null;
+    if (!isLoaded) return <NavbarSkeleton />;
 
     return (
         <section className="py-4 px-2">
@@ -233,7 +234,7 @@ const renderMenuItem = (item: MenuItem) => {
                 <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
                 <NavigationMenuContent className="bg-popover text-popover-foreground">
                     {item.items.map((subItem) => (
-                        <NavigationMenuLink asChild key={subItem.title} className="w-80">
+                        <NavigationMenuLink key={subItem.title} className="w-80" href={""}>
                             <SubMenuLink item={subItem} />
                         </NavigationMenuLink>
                     ))}

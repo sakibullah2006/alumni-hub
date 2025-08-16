@@ -11,6 +11,8 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { Footer } from '../components/common/Footer'
 import Navbar from '../components/common/Navbar'
+import { Suspense } from 'react'
+import { NavbarSkeleton } from '../components/skeletons/navbar-skeleton'
 
 export const metadata: Metadata = {
   title: 'Alumni Hub',

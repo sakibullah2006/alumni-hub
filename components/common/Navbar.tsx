@@ -102,7 +102,7 @@ const Navbar = ({
     console.log("Path", pathname);
 
     return (
-        <section className="py-4 px-2">
+        <section className="py-4 px-2 bg-background text-foreground">
             <div className="container mx-auto">
                 {/* Desktop Menu */}
                 <nav className="hidden justify-between lg:flex">
@@ -170,7 +170,7 @@ const Navbar = ({
                                     <Menu className="size-4" />
                                 </Button>
                             </SheetTrigger>
-                            <SheetContent className="overflow-y-auto">
+                            <SheetContent className="overflow-y-auto bg-card text-card-foreground">
                                 <SheetHeader>
                                     <SheetTitle>
                                         <Link href={logo.url} className="flex items-center gap-2">
@@ -251,10 +251,10 @@ const renderMenuItem = (item: MenuItem, pathname: string) => {
                 href={item.url}
                 className={cn(
                     "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors relative",
-                    "after:content-[''] after:absolute after:bottom-1 after:left-2 after:right-2 after:h-0.5 after:bg-current after:transition-all after:duration-300 after:w-0 hover:after:w-4/5",
+                    "after:content-[''] after:absolute after:bottom-1 after:left-2 after:right-2 after:h-0.5 after:bg-primary after:transition-all after:duration-300 after:w-0 hover:after:w-4/5",
                     pathname.trim() === item.url.trim()
                         ? "bg-accent text-accent-foreground"
-                        : "bg-non"
+                        : "bg-transparent"
                 )}
             >
                 {item.title}

@@ -3,7 +3,7 @@ import { Instagram, Facebook, Twitter, Linkedin } from "lucide-react"
 
 export function Footer() {
     return (
-        <footer className="bg-background border-t border-border">
+        <footer className="bg-card text-card-foreground border-t border-border">
             <div className="max-w-7xl mx-auto px-6 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Brand Section */}
@@ -21,28 +21,28 @@ export function Footer() {
                         <div className="flex items-center gap-4">
                             <Link
                                 href="#"
-                                className="text-muted-foreground hover:text-foreground transition-colors"
+                                className="text-muted-foreground hover:text-primary transition-colors"
                                 aria-label="Instagram"
                             >
                                 <Instagram className="w-5 h-5" />
                             </Link>
                             <Link
                                 href="#"
-                                className="text-muted-foreground hover:text-foreground transition-colors"
+                                className="text-muted-foreground hover:text-primary transition-colors"
                                 aria-label="Facebook"
                             >
                                 <Facebook className="w-5 h-5" />
                             </Link>
                             <Link
                                 href="#"
-                                className="text-muted-foreground hover:text-foreground transition-colors"
+                                className="text-muted-foreground hover:text-primary transition-colors"
                                 aria-label="Twitter"
                             >
                                 <Twitter className="w-5 h-5" />
                             </Link>
                             <Link
                                 href="#"
-                                className="text-muted-foreground hover:text-foreground transition-colors"
+                                className="text-muted-foreground hover:text-primary transition-colors"
                                 aria-label="LinkedIn"
                             >
                                 <Linkedin className="w-5 h-5" />
@@ -55,65 +55,65 @@ export function Footer() {
                         <h4 className="font-semibold text-foreground mb-4 font-sans">Product</h4>
                         <ul className="space-y-3">
                             <li>
-                                <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                                <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                                     Overview
                                 </Link>
                             </li>
                             <li>
-                                <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                                <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                                     Directory
                                 </Link>
                             </li>
                             <li>
-                                <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                                <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                                     Events
                                 </Link>
                             </li>
                             <li>
-                                <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                                <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                                     Features
                                 </Link>
                             </li>
                             <li>
-                                <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                                <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                                     Networking
                                 </Link>
                             </li>
                             <li>
-                                <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                                <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                                     Mentorship
                                 </Link>
                             </li>
                         </ul>
                     </div>
 
-                    {/* Company Links */}
+                    {/* External Links */}
                     <div>
-                        <h4 className="font-semibold text-foreground mb-4 font-sans">Company</h4>
+                        <h4 className="font-semibold text-foreground mb-4 font-sans">External Links</h4>
                         <ul className="space-y-3">
                             <li>
-                                <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                                    About
+                                <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                                    Institute Home
                                 </Link>
                             </li>
                             <li>
-                                <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                                    Team
+                                <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                                    Career Services
                                 </Link>
                             </li>
                             <li>
-                                <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                                    Blog
+                                <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                                    Library
                                 </Link>
                             </li>
                             <li>
-                                <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                                    Careers
+                                <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                                    News & Updates
                                 </Link>
                             </li>
                             <li>
-                                <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                                    Contact
+                                <Link href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                                    Giving Back
                                 </Link>
                             </li>
                         </ul>
@@ -130,7 +130,7 @@ export function Footer() {
                         <span>Made with</span>
                         <span className="text-red-500">❤️</span>
                         <span>by</span>
-                        <Link href="#" className="font-semibold text-foreground hover:text-primary transition-colors">
+                        <Link href="#" className="font-semibold text-primary hover:underline transition-colors">
                             @yourteam
                         </Link>
                     </div>

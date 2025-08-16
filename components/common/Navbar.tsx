@@ -90,7 +90,6 @@ const Navbar = ({
 }: NavbarProps) => {
     const { isSignedIn, signOut, userId, isLoaded } = useAuth()
     const [buttonLoading, setButtonLoading] = useState(false);
-    const router = useRouter();
     const pathname = usePathname();
 
     const auth = {
@@ -100,9 +99,11 @@ const Navbar = ({
 
     if (!isLoaded) return <NavbarSkeleton />;
 
+    console.log("Path", pathname);
+
     return (
         <section className="py-4 px-2">
-            <div className="container ">
+            <div className="container mx-auto">
                 {/* Desktop Menu */}
                 <nav className="hidden justify-between lg:flex">
                     <div className="flex items-center gap-6">
@@ -120,7 +121,7 @@ const Navbar = ({
                         <div className="flex items-center">
                             <NavigationMenu>
                                 <NavigationMenuList>
-                                    {menu.map((item) => renderMenuItem(item))}
+                                    {menu.map((item) => renderMenuItem(item, pathname))}
                                 </NavigationMenuList>
                             </NavigationMenu>
                         </div>
@@ -187,7 +188,7 @@ const Navbar = ({
                                         collapsible
                                         className="flex w-full flex-col gap-4"
                                     >
-                                        {menu.map((item) => renderMobileMenuItem(item))}
+                                        {menu.map((item) => renderMobileMenuItem(item, pathname))}
                                     </Accordion>
 
 
@@ -227,7 +228,7 @@ const Navbar = ({
     );
 };
 
-const renderMenuItem = (item: MenuItem) => {
+const renderMenuItem = (item: MenuItem, pathname: string) => {
     if (item.items) {
         return (
             <NavigationMenuItem key={item.title}>
@@ -236,6 +237,7 @@ const renderMenuItem = (item: MenuItem) => {
                     {item.items.map((subItem) => (
                         <NavigationMenuLink key={subItem.title} className="w-80" href={""}>
                             <SubMenuLink item={subItem} />
+
                         </NavigationMenuLink>
                     ))}
                 </NavigationMenuContent>
@@ -244,10 +246,16 @@ const renderMenuItem = (item: MenuItem) => {
     }
 
     return (
-        <NavigationMenuItem key={item.title}>
+        <NavigationMenuItem key={item.title} className="">
             <NavigationMenuLink
                 href={item.url}
-                className="bg-background hover:bg-muted hover:text-accent-foreground group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors"
+                className={cn(
+                    "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors relative",
+                    "after:content-[''] after:absolute after:bottom-1 after:left-2 after:right-2 after:h-0.5 after:bg-current after:transition-all after:duration-300 after:w-0 hover:after:w-4/5",
+                    pathname.trim() === item.url.trim()
+                        ? "bg-accent text-accent-foreground"
+                        : "bg-non"
+                )}
             >
                 {item.title}
             </NavigationMenuLink>
@@ -255,7 +263,7 @@ const renderMenuItem = (item: MenuItem) => {
     );
 };
 
-const renderMobileMenuItem = (item: MenuItem) => {
+const renderMobileMenuItem = (item: MenuItem, pathname: string) => {
     if (item.items) {
         return (
             <AccordionItem key={item.title} value={item.title} className="border-b-0">
@@ -272,7 +280,16 @@ const renderMobileMenuItem = (item: MenuItem) => {
     }
 
     return (
-        <Link key={item.title} href={item.url} className="text-md font-semibold">
+        <Link
+            key={item.title}
+            href={item.url}
+            className={cn(
+                "text-md font-semibold block py-2 px-3 rounded-md transition-colors",
+                pathname.trim() === item.url.trim()
+                    ? "bg-accent text-accent-foreground"
+                    : "hover:bg-muted"
+            )}
+        >
             {item.title}
         </Link>
     );

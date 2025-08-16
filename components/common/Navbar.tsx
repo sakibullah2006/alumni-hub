@@ -71,16 +71,16 @@ const Navbar = ({
     menu = [
         { title: "Home", url: ROUTES.HOME },
         {
+            title: 'Dashboard',
+            url: ROUTES.PROFILE,
+        },
+        {
             title: "Discover",
             url: ROUTES.ALUMNIES,
         },
         {
             title: "Events",
             url: ROUTES.EVENTS,
-        },
-        {
-            title: 'Dashboard',
-            url: ROUTES.PROFILE,
         },
     ],
     // auth = {
@@ -99,7 +99,7 @@ const Navbar = ({
 
     if (!isLoaded) return <NavbarSkeleton />;
 
-    console.log("Path", pathname);
+    // console.log("Path", pathname);
 
     return (
         <section className="py-4 px-2 bg-background text-foreground">

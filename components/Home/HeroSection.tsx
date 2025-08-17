@@ -8,7 +8,7 @@ import Floating, {
     FloatingElement,
 } from "@/components/fancy/image/parallax-floating"
 import Link from "next/link"
-import { ROUTES } from "../../lib/constants/route.constants"
+import { ROUTES } from "../../constants/route.constants"
 
 const HeroSection = () => {
     const [scope, animate] = useAnimate()

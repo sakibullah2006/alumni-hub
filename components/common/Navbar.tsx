@@ -23,13 +23,13 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import { ROUTES } from "../../lib/constants/route.constants";
+import { ROUTES } from "../../constants/route.constants";
 import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { LoadingButton } from "./LoadingButton";
 import { useState } from "react";
-import { cn } from "../../lib/utils";
+import { cn } from "../../_lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { NavbarSkeleton } from "../skeletons/navbar-skeleton";
 

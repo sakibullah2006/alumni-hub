@@ -12,7 +12,7 @@ import {
   useVelocity,
 } from "motion/react"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/_lib/utils"
 
 // Custom wrap function
 const wrap = (min: number, max: number, value: number): number => {

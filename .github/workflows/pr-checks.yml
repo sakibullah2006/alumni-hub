@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+      DATABASE_URI: 'file:./payload.sqlite'
 
 
     steps:

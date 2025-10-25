@@ -73,6 +73,7 @@ export interface Config {
     verifications: Verification;
     'admin-invitations': AdminInvitation;
     media: Media;
+    address: Address;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -85,6 +86,7 @@ export interface Config {
     verifications: VerificationsSelect<false> | VerificationsSelect<true>;
     'admin-invitations': AdminInvitationsSelect<false> | AdminInvitationsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    address: AddressSelect<false> | AddressSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -127,13 +129,23 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
-  education?: {
-    examination_name?: string | null;
-    institution?: string | null;
-    result?: string | null;
-    passingYear?: string | null;
-    group?: string | null;
-  };
+  profilePicture?: (number | null) | Media;
+  title?: string | null;
+  bio?: string | null;
+  /**
+   * e.g., 2020
+   */
+  dskmPassingYear?: number | null;
+  major?: string | null;
+  /**
+   * Link to an address document that contains presentAddress and permanentAddress groups
+   */
+  address?: (number | null) | Address;
+  contactEmail?: string | null;
+  phone?: string | null;
+  linkedInUrl?: string | null;
+  facebookUrl?: string | null;
+  websiteUrl?: string | null;
   /**
    * Users chosen display name
    */
@@ -168,6 +180,67 @@ export interface User {
    * The date and time when the ban will expire
    */
   banExpires?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt: string;
+  user: number | User;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    profile?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "address".
+ */
+export interface Address {
+  id: number;
+  presentAddress: {
+    street?: string | null;
+    city?: string | null;
+    state?: string | null;
+    postalCode?: string | null;
+    country: string;
+  };
+  permanentAddress: {
+    street?: string | null;
+    city?: string | null;
+    state?: string | null;
+    postalCode?: string | null;
+    country: string;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Sessions are active sessions for users. They are used to authenticate users with a session token
@@ -292,25 +365,6 @@ export interface AdminInvitation {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  alt: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -339,6 +393,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'address';
+        value: number | Address;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -387,15 +445,17 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
-  education?:
-    | T
-    | {
-        examination_name?: T;
-        institution?: T;
-        result?: T;
-        passingYear?: T;
-        group?: T;
-      };
+  profilePicture?: T;
+  title?: T;
+  bio?: T;
+  dskmPassingYear?: T;
+  major?: T;
+  address?: T;
+  contactEmail?: T;
+  phone?: T;
+  linkedInUrl?: T;
+  facebookUrl?: T;
+  websiteUrl?: T;
   name?: T;
   email?: T;
   emailVerified?: T;
@@ -467,6 +527,7 @@ export interface AdminInvitationsSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  user?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -478,6 +539,56 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        profile?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "address_select".
+ */
+export interface AddressSelect<T extends boolean = true> {
+  presentAddress?:
+    | T
+    | {
+        street?: T;
+        city?: T;
+        state?: T;
+        postalCode?: T;
+        country?: T;
+      };
+  permanentAddress?:
+    | T
+    | {
+        street?: T;
+        city?: T;
+        state?: T;
+        postalCode?: T;
+        country?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

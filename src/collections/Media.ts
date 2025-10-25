@@ -10,7 +10,7 @@ export const Media: CollectionConfig = {
     // Logged-in users can create
     create: ({ req }) => !!req.user,
     // Only the user who uploaded it or an admin can update/delete
-    update: ({ req }) => {
+    update: ({ req, data }) => {
       if (req.user?.role?.match('admin')) {
         return true
       }

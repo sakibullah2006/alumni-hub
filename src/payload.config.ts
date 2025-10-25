@@ -11,6 +11,7 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Address } from './collections/Address'
 import { plugins } from './plugins'
+import { Educations } from './collections/Educations'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -26,6 +27,7 @@ export default buildConfig({
     Users,
     Media,
     Address,
+    Educations
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET as string,

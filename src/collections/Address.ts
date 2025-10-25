@@ -21,14 +21,17 @@ export const Address: CollectionConfig = {
                 {
                     name: 'street',
                     type: 'text',
+                    label: 'Village/Road/Street'
                 },
                 {
                     name: 'city',
                     type: 'text',
+                    label: 'City or District'
                 },
                 {
                     name: 'state',
                     type: 'text',
+                    label: 'Division or State'
                 },
                 {
                     name: 'postalCode',
@@ -49,14 +52,17 @@ export const Address: CollectionConfig = {
                 {
                     name: 'street',
                     type: 'text',
+                    label: 'Village/Road/Street'
                 },
                 {
                     name: 'city',
                     type: 'text',
+                    label: 'City or District'
                 },
                 {
                     name: 'state',
                     type: 'text',
+                    label: 'Division or State'
                 },
                 {
                     name: 'postalCode',

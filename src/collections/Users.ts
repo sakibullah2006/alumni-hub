@@ -8,9 +8,21 @@ export const Users: CollectionConfig = {
     admin: authenticatedAsAdmin,
     create: authenticatedAsAdmin,
     readVersions: authenticatedAsAdmin,
-    delete: authenticated,
     read: authenticated,
-    update: authenticated,
+    delete: ({ req: { user }, id }) => {
+      if (user?.role?.match('admin')) {
+        return true
+      }
+      // allow any other users to update only oneself
+      return user?.id === id
+    },
+    update: ({ req: { user }, id }) => {
+      if (user?.role?.match('admin')) {
+        return true
+      }
+      // allow any other users to update only oneself
+      return user?.id === id
+    },
   },
   admin: {
     useAsTitle: 'email',
@@ -33,7 +45,7 @@ export const Users: CollectionConfig = {
               type: 'relationship',
               relationTo: 'media',
               admin: {
-                readOnly: true,
+                // readOnly: true,
                 position: 'sidebar',
               },
             },
@@ -60,18 +72,10 @@ export const Users: CollectionConfig = {
             },
           ],
         },
-        // Contact & Location
+        // Contact 
         {
           label: 'Contact',
           fields: [
-            {
-              name: 'address',
-              type: 'relationship',
-              relationTo: 'address',
-              admin: {
-                description: 'Link to an address document that contains presentAddress and permanentAddress groups',
-              },
-            },
             {
               name: 'contactEmail',
               type: 'email',
@@ -86,7 +90,7 @@ export const Users: CollectionConfig = {
               type: 'text',
               label: 'Your Personal Phone Number',
               admin: {
-                readOnly: true,
+                // readOnly: true,
                 position: 'sidebar',
               },
             },
@@ -107,6 +111,20 @@ export const Users: CollectionConfig = {
             },
           ],
         },
+        // Address
+        {
+          label: 'Address',
+          fields: [
+            {
+              name: 'address',
+              type: 'relationship',
+              relationTo: 'address',
+              admin: {
+                description: 'Link to an address document that contains presentAddress and permanentAddress groups',
+              },
+            },
+          ]
+        }
       ],
     },
   ],

@@ -74,6 +74,7 @@ export interface Config {
     'admin-invitations': AdminInvitation;
     media: Media;
     address: Address;
+    educations: Education;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -87,6 +88,7 @@ export interface Config {
     'admin-invitations': AdminInvitationsSelect<false> | AdminInvitationsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     address: AddressSelect<false> | AddressSelect<true>;
+    educations: EducationsSelect<false> | EducationsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -137,15 +139,15 @@ export interface User {
    */
   dskmPassingYear?: number | null;
   major?: string | null;
-  /**
-   * Link to an address document that contains presentAddress and permanentAddress groups
-   */
-  address?: (number | null) | Address;
   contactEmail?: string | null;
   phone?: string | null;
   linkedInUrl?: string | null;
   facebookUrl?: string | null;
   websiteUrl?: string | null;
+  /**
+   * Link to an address document that contains presentAddress and permanentAddress groups
+   */
+  address?: (number | null) | Address;
   /**
    * Users chosen display name
    */
@@ -365,6 +367,31 @@ export interface AdminInvitation {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "educations".
+ */
+export interface Education {
+  id: number;
+  institutionName: string;
+  degree: string;
+  fieldOfStudy: string;
+  result?: {
+    gradeType?: ('gpa' | 'cgpa' | 'percentage') | null;
+    grade?: number | null;
+    scale?: number | null;
+  };
+  startDate?: string | null;
+  isOngoing?: boolean | null;
+  endDate?: string | null;
+  description?: string | null;
+  /**
+   * This education entry belongs to this user.
+   */
+  user: number | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -397,6 +424,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'address';
         value: number | Address;
+      } | null)
+    | ({
+        relationTo: 'educations';
+        value: number | Education;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -450,12 +481,12 @@ export interface UsersSelect<T extends boolean = true> {
   bio?: T;
   dskmPassingYear?: T;
   major?: T;
-  address?: T;
   contactEmail?: T;
   phone?: T;
   linkedInUrl?: T;
   facebookUrl?: T;
   websiteUrl?: T;
+  address?: T;
   name?: T;
   email?: T;
   emailVerified?: T;
@@ -587,6 +618,29 @@ export interface AddressSelect<T extends boolean = true> {
         postalCode?: T;
         country?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "educations_select".
+ */
+export interface EducationsSelect<T extends boolean = true> {
+  institutionName?: T;
+  degree?: T;
+  fieldOfStudy?: T;
+  result?:
+    | T
+    | {
+        gradeType?: T;
+        grade?: T;
+        scale?: T;
+      };
+  startDate?: T;
+  isOngoing?: T;
+  endDate?: T;
+  description?: T;
+  user?: T;
   updatedAt?: T;
   createdAt?: T;
 }

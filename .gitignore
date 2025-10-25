@@ -51,5 +51,5 @@ node_modules/
 
 
 # databse
-*.db
 db/alumni-hub.db
+/db/*

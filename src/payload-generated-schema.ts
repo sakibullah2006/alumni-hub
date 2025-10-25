@@ -18,7 +18,7 @@ import {
 } from '@payloadcms/db-sqlite/drizzle/sqlite-core'
 import { sql, relations } from '@payloadcms/db-sqlite/drizzle'
 
-export const users = sqliteTable(
+export const users: any = sqliteTable(
   'users',
   {
     id: integer('id').primaryKey(),

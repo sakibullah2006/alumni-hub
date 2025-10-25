@@ -127,6 +127,13 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
+  education?: {
+    examination_name?: string | null;
+    institution?: string | null;
+    result?: string | null;
+    passingYear?: string | null;
+    group?: string | null;
+  };
   /**
    * Users chosen display name
    */
@@ -380,6 +387,15 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  education?:
+    | T
+    | {
+        examination_name?: T;
+        institution?: T;
+        result?: T;
+        passingYear?: T;
+        group?: T;
+      };
   name?: T;
   email?: T;
   emailVerified?: T;

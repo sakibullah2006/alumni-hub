@@ -1,0 +1,33 @@
+# .github/workflows/pr-checks.yml
+
+name: 'PR Checks: Lint & Build'
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Run Linter
+        run: pnpm lint
+
+      - name: Build All Packages
+        run: pnpm build

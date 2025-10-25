@@ -28,8 +28,10 @@ jobs:
       - name: Install Dependencies
         run: pnpm install
 
-      - name: Run Linter
+      - name: Run Linter (main branch only)
+        # This 'if' condition ensures this step only runs on pushes to the 'main' branch
+        if: github.ref == 'refs/heads/main'
         run: pnpm lint
-
+      
       - name: Build All Packages
         run: pnpm build

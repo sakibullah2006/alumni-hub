@@ -7,12 +7,12 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
-import { Users } from './collections/Users'
-import { Media } from './collections/Media'
-import { Address } from './collections/Address'
+import { Users } from './collections/user/Users'
 import { plugins } from './plugins'
-import { Educations } from './collections/Educations'
-import { Experiences } from './collections/Experiences'
+import { Experiences } from './collections/experience/Experiences'
+import { Media } from './collections/media/Media'
+import { Address } from './collections/address/Address'
+import { Educations } from './collections/education/Educations'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)

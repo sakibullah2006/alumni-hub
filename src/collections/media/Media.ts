@@ -1,7 +1,7 @@
 // src/payload/collections/Media.ts
 
 import { CollectionConfig } from "payload"
-import { generateBlurPlaceholder } from "../hooks/media/generateBlurPlaceholder"
+import { generateBlurPlaceholder } from "./hooks/generateBlurPlaceholder"
 
 export const Media: CollectionConfig = {
   slug: 'media',

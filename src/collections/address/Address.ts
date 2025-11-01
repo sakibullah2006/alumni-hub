@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { authenticated, authenticatedAsAdmin } from '../access/authenticated'
+import { authenticated, authenticatedAsAdmin } from '@/access/authenticated'
 
 export const Address: CollectionConfig = {
     slug: 'address',

@@ -45,6 +45,11 @@ export default buildConfig({
   }),
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL,
   sharp,
+  upload: {
+    limits: {
+      fileSize: 1000000 // 1MB
+    }
+  },
   plugins: [
     ...plugins
     // storage-adapter-placeholder

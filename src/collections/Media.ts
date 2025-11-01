@@ -1,9 +1,13 @@
 // src/payload/collections/Media.ts
 
 import { CollectionConfig } from "payload"
+import { generateBlurPlaceholder } from "../hooks/media/generateBlurPlaceholder"
 
 export const Media: CollectionConfig = {
   slug: 'media',
+  hooks: {
+    afterChange: [generateBlurPlaceholder],
+  },
   access: {
     // Anyone can read images
     read: () => true,
@@ -23,30 +27,24 @@ export const Media: CollectionConfig = {
       return req.user?.id === req.data?.user?.id
     },
   },
+  admin: {
+    useAsTitle: 'alt',
+  },
   upload: {
+    formatOptions: {
+      format: "webp",
+      options: {
+        quality: 80,
+      },
+    },
     staticDir: 'media',
-    imageSizes: [
-      {
-        name: 'thumbnail',
-        width: 400,
-        height: 400,
-        position: 'centre',
-        fit: 'cover'
-      },
-      {
-        name: 'profile',
-        width: 800,
-        height: 800,
-        position: 'centre',
-        fit: 'contain'
-      },
-    ],
     adminThumbnail: 'profile',
     mimeTypes: ['image/*'],
   },
   fields: [
     {
       name: 'alt',
+      label: "Alt Text",
       type: 'text',
       required: true,
     },
@@ -62,5 +60,16 @@ export const Media: CollectionConfig = {
         position: 'sidebar',
       },
     },
+    {
+      name: "blurDataURL",
+      type: "text",
+      label: "Blur Placeholder",
+      admin: {
+        description: "Base64 encoded blur placeholder (auto-generated)",
+        readOnly: true,
+        width: 40
+      },
+    },
+
   ],
 }

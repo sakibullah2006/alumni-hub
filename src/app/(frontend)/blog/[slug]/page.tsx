@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { PayloadImage } from '@/components/payload/PayloadImage'
 import { RichText } from '@/components/payload/RichText'
 import type { Blog, Media, User } from '@/payload-types'
+import { Metadata } from 'next'
 
 interface PageProps {
   params: Promise<{
@@ -205,7 +206,7 @@ export async function generateStaticParams() {
 }
 
 // Generate metadata for SEO
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
   const payload = await getPayload()
 

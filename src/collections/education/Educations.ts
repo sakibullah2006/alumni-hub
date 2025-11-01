@@ -1,5 +1,5 @@
 import { CollectionConfig } from "payload"
-import { authenticated } from "@/access/authenticated"
+import { authenticated } from "@/collections/common/access/authenticated"
 
 export const Educations: CollectionConfig = {
     slug: 'educations',

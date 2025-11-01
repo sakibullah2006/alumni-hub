@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { authenticated, authenticatedAsAdmin } from '@/access/authenticated'
+import { authenticated, authenticatedAsAdmin } from '@/collections/common/access/authenticated'
 // Addresses are now their own collection; Users will reference addresses via relation fields
 
 export const Users: CollectionConfig = {

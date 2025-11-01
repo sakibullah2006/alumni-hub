@@ -124,7 +124,7 @@ export const Users: CollectionConfig = {
               },
             },
           ]
-        }
+        },
       ],
     },
   ],

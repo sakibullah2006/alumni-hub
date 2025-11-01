@@ -12,6 +12,7 @@ import { Media } from './collections/Media'
 import { Address } from './collections/Address'
 import { plugins } from './plugins'
 import { Educations } from './collections/Educations'
+import { Experiences } from './collections/Experiences'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -27,7 +28,8 @@ export default buildConfig({
     Users,
     Media,
     Address,
-    Educations
+    Educations,
+    Experiences,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET as string,
@@ -37,6 +39,7 @@ export default buildConfig({
   db: sqliteAdapter({
     client: {
       url: process.env.DATABASE_URI || '',
+      // url: process.env.TURSO_DATABASE_URL || '',
       // authToken: process.env.TURSO_AUTH_TOKEN || ''
     },
   }),

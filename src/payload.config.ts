@@ -13,6 +13,9 @@ import { Experiences } from './collections/experience/Experiences'
 import { Media } from './collections/media/Media'
 import { Address } from './collections/address/Address'
 import { Educations } from './collections/education/Educations'
+import { Blogs } from './collections/blog/Blogs'
+import { Categories } from './collections/category/Categories'
+import { Tags } from './collections/tag/Tags'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -30,6 +33,9 @@ export default buildConfig({
     Address,
     Educations,
     Experiences,
+    Blogs,
+    Categories,
+    Tags,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET as string,

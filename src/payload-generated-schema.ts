@@ -6,7 +6,7 @@
  * and re-run `payload generate:db-schema` to regenerate this file.
  */
 
-import type { } from '@payloadcms/db-sqlite'
+import type {} from '@payloadcms/db-sqlite'
 import {
   sqliteTable,
   index,
@@ -18,7 +18,7 @@ import {
 } from '@payloadcms/db-sqlite/drizzle/sqlite-core'
 import { sql, relations } from '@payloadcms/db-sqlite/drizzle'
 
-export const users: any = sqliteTable(
+export const users = sqliteTable(
   'users',
   {
     id: integer('id').primaryKey(),
@@ -29,14 +29,14 @@ export const users: any = sqliteTable(
     bio: text('bio'),
     dskmPassingYear: numeric('dskm_passing_year', { mode: 'number' }),
     major: text('major'),
-    address: integer('address_id').references(() => address.id, {
-      onDelete: 'set null',
-    }),
     contactEmail: text('contact_email'),
     phone: text('phone'),
     linkedInUrl: text('linked_in_url'),
     facebookUrl: text('facebook_url'),
     websiteUrl: text('website_url'),
+    address: integer('address_id').references(() => address.id, {
+      onDelete: 'set null',
+    }),
     name: text('name').notNull(),
     email: text('email').notNull(),
     emailVerified: integer('email_verified', { mode: 'boolean' }).notNull().default(false),
@@ -187,6 +187,7 @@ export const media = sqliteTable(
       .references(() => users.id, {
         onDelete: 'set null',
       }),
+    blurDataURL: text('blur_data_u_r_l'),
     updatedAt: text('updated_at')
       .notNull()
       .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
@@ -202,28 +203,12 @@ export const media = sqliteTable(
     height: numeric('height', { mode: 'number' }),
     focalX: numeric('focal_x', { mode: 'number' }),
     focalY: numeric('focal_y', { mode: 'number' }),
-    sizes_thumbnail_url: text('sizes_thumbnail_url'),
-    sizes_thumbnail_width: numeric('sizes_thumbnail_width', { mode: 'number' }),
-    sizes_thumbnail_height: numeric('sizes_thumbnail_height', { mode: 'number' }),
-    sizes_thumbnail_mimeType: text('sizes_thumbnail_mime_type'),
-    sizes_thumbnail_filesize: numeric('sizes_thumbnail_filesize', { mode: 'number' }),
-    sizes_thumbnail_filename: text('sizes_thumbnail_filename'),
-    sizes_profile_url: text('sizes_profile_url'),
-    sizes_profile_width: numeric('sizes_profile_width', { mode: 'number' }),
-    sizes_profile_height: numeric('sizes_profile_height', { mode: 'number' }),
-    sizes_profile_mimeType: text('sizes_profile_mime_type'),
-    sizes_profile_filesize: numeric('sizes_profile_filesize', { mode: 'number' }),
-    sizes_profile_filename: text('sizes_profile_filename'),
   },
   (columns) => [
     index('media_user_idx').on(columns.user),
     index('media_updated_at_idx').on(columns.updatedAt),
     index('media_created_at_idx').on(columns.createdAt),
     uniqueIndex('media_filename_idx').on(columns.filename),
-    index('media_sizes_thumbnail_sizes_thumbnail_filename_idx').on(
-      columns.sizes_thumbnail_filename,
-    ),
-    index('media_sizes_profile_sizes_profile_filename_idx').on(columns.sizes_profile_filename),
   ],
 )
 
@@ -251,6 +236,421 @@ export const address = sqliteTable(
   (columns) => [
     index('address_updated_at_idx').on(columns.updatedAt),
     index('address_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const educations = sqliteTable(
+  'educations',
+  {
+    id: integer('id').primaryKey(),
+    institutionName: text('institution_name').notNull(),
+    degree: text('degree').notNull(),
+    fieldOfStudy: text('field_of_study').notNull(),
+    result_gradeType: text('result_grade_type', { enum: ['gpa', 'cgpa', 'percentage'] }),
+    result_grade: numeric('result_grade', { mode: 'number' }),
+    result_scale: numeric('result_scale', { mode: 'number' }),
+    startDate: text('start_date').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    isOngoing: integer('is_ongoing', { mode: 'boolean' }).default(false),
+    endDate: text('end_date').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    description: text('description'),
+    user: integer('user_id')
+      .notNull()
+      .references(() => users.id, {
+        onDelete: 'set null',
+      }),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+  },
+  (columns) => [
+    index('educations_user_idx').on(columns.user),
+    index('educations_updated_at_idx').on(columns.updatedAt),
+    index('educations_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const experiences = sqliteTable(
+  'experiences',
+  {
+    id: integer('id').primaryKey(),
+    jobTitle: text('job_title').notNull(),
+    companyName: text('company_name').notNull(),
+    location: text('location'),
+    startDate: text('start_date')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    endDate: text('end_date').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    description: text('description', { mode: 'json' }),
+    user: integer('user_id')
+      .notNull()
+      .references(() => users.id, {
+        onDelete: 'set null',
+      }),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+  },
+  (columns) => [
+    index('experiences_user_idx').on(columns.user),
+    index('experiences_updated_at_idx').on(columns.updatedAt),
+    index('experiences_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const blogs_blocks_rich_text = sqliteTable(
+  'blogs_blocks_rich_text',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    _path: text('_path').notNull(),
+    id: text('id').primaryKey(),
+    content: text('content', { mode: 'json' }),
+    blockName: text('block_name'),
+  },
+  (columns) => [
+    index('blogs_blocks_rich_text_order_idx').on(columns._order),
+    index('blogs_blocks_rich_text_parent_id_idx').on(columns._parentID),
+    index('blogs_blocks_rich_text_path_idx').on(columns._path),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [blogs.id],
+      name: 'blogs_blocks_rich_text_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const blogs_blocks_image = sqliteTable(
+  'blogs_blocks_image',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    _path: text('_path').notNull(),
+    id: text('id').primaryKey(),
+    image: integer('image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    caption: text('caption'),
+    blockName: text('block_name'),
+  },
+  (columns) => [
+    index('blogs_blocks_image_order_idx').on(columns._order),
+    index('blogs_blocks_image_parent_id_idx').on(columns._parentID),
+    index('blogs_blocks_image_path_idx').on(columns._path),
+    index('blogs_blocks_image_image_idx').on(columns.image),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [blogs.id],
+      name: 'blogs_blocks_image_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const blogs_blocks_code = sqliteTable(
+  'blogs_blocks_code',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    _path: text('_path').notNull(),
+    id: text('id').primaryKey(),
+    code: text('code'),
+    language: text('language', {
+      enum: ['javascript', 'typescript', 'python', 'go', 'html', 'css', 'json'],
+    }).default('javascript'),
+    blockName: text('block_name'),
+  },
+  (columns) => [
+    index('blogs_blocks_code_order_idx').on(columns._order),
+    index('blogs_blocks_code_parent_id_idx').on(columns._parentID),
+    index('blogs_blocks_code_path_idx').on(columns._path),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [blogs.id],
+      name: 'blogs_blocks_code_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const blogs = sqliteTable(
+  'blogs',
+  {
+    id: integer('id').primaryKey(),
+    title: text('title'),
+    excerpt: text('excerpt'),
+    seo_metaTitle: text('seo_meta_title'),
+    seo_metaDescription: text('seo_meta_description'),
+    generateSlug: integer('generate_slug', { mode: 'boolean' }).default(true),
+    slug: text('slug'),
+    status: text('status', { enum: ['draft', 'published'] }).default('draft'),
+    publishedDate: text('published_date').default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    author: integer('author_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+    featuredImage: integer('featured_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    _status: text('_status', { enum: ['draft', 'published'] }).default('draft'),
+  },
+  (columns) => [
+    uniqueIndex('blogs_slug_idx').on(columns.slug),
+    index('blogs_author_idx').on(columns.author),
+    index('blogs_featured_image_idx').on(columns.featuredImage),
+    index('blogs_updated_at_idx').on(columns.updatedAt),
+    index('blogs_created_at_idx').on(columns.createdAt),
+    index('blogs__status_idx').on(columns._status),
+  ],
+)
+
+export const blogs_rels = sqliteTable(
+  'blogs_rels',
+  {
+    id: integer('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: text('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('blogs_rels_order_idx').on(columns.order),
+    index('blogs_rels_parent_idx').on(columns.parent),
+    index('blogs_rels_path_idx').on(columns.path),
+    index('blogs_rels_categories_id_idx').on(columns.categoriesID),
+    index('blogs_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [blogs.id],
+      name: 'blogs_rels_parent_1_idx',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'blogs_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'blogs_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const _blogs_v_blocks_rich_text = sqliteTable(
+  '_blogs_v_blocks_rich_text',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    _path: text('_path').notNull(),
+    id: integer('id').primaryKey(),
+    content: text('content', { mode: 'json' }),
+    _uuid: text('_uuid'),
+    blockName: text('block_name'),
+  },
+  (columns) => [
+    index('_blogs_v_blocks_rich_text_order_idx').on(columns._order),
+    index('_blogs_v_blocks_rich_text_parent_id_idx').on(columns._parentID),
+    index('_blogs_v_blocks_rich_text_path_idx').on(columns._path),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [_blogs_v.id],
+      name: '_blogs_v_blocks_rich_text_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const _blogs_v_blocks_image = sqliteTable(
+  '_blogs_v_blocks_image',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    _path: text('_path').notNull(),
+    id: integer('id').primaryKey(),
+    image: integer('image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    caption: text('caption'),
+    _uuid: text('_uuid'),
+    blockName: text('block_name'),
+  },
+  (columns) => [
+    index('_blogs_v_blocks_image_order_idx').on(columns._order),
+    index('_blogs_v_blocks_image_parent_id_idx').on(columns._parentID),
+    index('_blogs_v_blocks_image_path_idx').on(columns._path),
+    index('_blogs_v_blocks_image_image_idx').on(columns.image),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [_blogs_v.id],
+      name: '_blogs_v_blocks_image_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const _blogs_v_blocks_code = sqliteTable(
+  '_blogs_v_blocks_code',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    _path: text('_path').notNull(),
+    id: integer('id').primaryKey(),
+    code: text('code'),
+    language: text('language', {
+      enum: ['javascript', 'typescript', 'python', 'go', 'html', 'css', 'json'],
+    }).default('javascript'),
+    _uuid: text('_uuid'),
+    blockName: text('block_name'),
+  },
+  (columns) => [
+    index('_blogs_v_blocks_code_order_idx').on(columns._order),
+    index('_blogs_v_blocks_code_parent_id_idx').on(columns._parentID),
+    index('_blogs_v_blocks_code_path_idx').on(columns._path),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [_blogs_v.id],
+      name: '_blogs_v_blocks_code_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const _blogs_v = sqliteTable(
+  '_blogs_v',
+  {
+    id: integer('id').primaryKey(),
+    parent: integer('parent_id').references(() => blogs.id, {
+      onDelete: 'set null',
+    }),
+    version_title: text('version_title'),
+    version_excerpt: text('version_excerpt'),
+    version_seo_metaTitle: text('version_seo_meta_title'),
+    version_seo_metaDescription: text('version_seo_meta_description'),
+    version_generateSlug: integer('version_generate_slug', { mode: 'boolean' }).default(true),
+    version_slug: text('version_slug'),
+    version_status: text('version_status', { enum: ['draft', 'published'] }).default('draft'),
+    version_publishedDate: text('version_published_date').default(
+      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
+    ),
+    version_author: integer('version_author_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+    version_featuredImage: integer('version_featured_image_id').references(() => media.id, {
+      onDelete: 'set null',
+    }),
+    version_updatedAt: text('version_updated_at').default(
+      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
+    ),
+    version_createdAt: text('version_created_at').default(
+      sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`,
+    ),
+    version__status: text('version__status', { enum: ['draft', 'published'] }).default('draft'),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    latest: integer('latest', { mode: 'boolean' }),
+    autosave: integer('autosave', { mode: 'boolean' }),
+  },
+  (columns) => [
+    index('_blogs_v_parent_idx').on(columns.parent),
+    index('_blogs_v_version_version_slug_idx').on(columns.version_slug),
+    index('_blogs_v_version_version_author_idx').on(columns.version_author),
+    index('_blogs_v_version_version_featured_image_idx').on(columns.version_featuredImage),
+    index('_blogs_v_version_version_updated_at_idx').on(columns.version_updatedAt),
+    index('_blogs_v_version_version_created_at_idx').on(columns.version_createdAt),
+    index('_blogs_v_version_version__status_idx').on(columns.version__status),
+    index('_blogs_v_created_at_idx').on(columns.createdAt),
+    index('_blogs_v_updated_at_idx').on(columns.updatedAt),
+    index('_blogs_v_latest_idx').on(columns.latest),
+    index('_blogs_v_autosave_idx').on(columns.autosave),
+  ],
+)
+
+export const _blogs_v_rels = sqliteTable(
+  '_blogs_v_rels',
+  {
+    id: integer('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: text('path').notNull(),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('_blogs_v_rels_order_idx').on(columns.order),
+    index('_blogs_v_rels_parent_idx').on(columns.parent),
+    index('_blogs_v_rels_path_idx').on(columns.path),
+    index('_blogs_v_rels_categories_id_idx').on(columns.categoriesID),
+    index('_blogs_v_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [_blogs_v.id],
+      name: '_blogs_v_rels_parent_1_idx',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: '_blogs_v_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: '_blogs_v_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const categories = sqliteTable(
+  'categories',
+  {
+    id: integer('id').primaryKey(),
+    name: text('name').notNull(),
+    generateSlug: integer('generate_slug', { mode: 'boolean' }).default(true),
+    slug: text('slug').notNull(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+  },
+  (columns) => [
+    index('categories_name_idx').on(columns.name),
+    uniqueIndex('categories_slug_idx').on(columns.slug),
+    index('categories_updated_at_idx').on(columns.updatedAt),
+    index('categories_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const tags = sqliteTable(
+  'tags',
+  {
+    id: integer('id').primaryKey(),
+    name: text('name').notNull(),
+    generateSlug: integer('generate_slug', { mode: 'boolean' }).default(true),
+    slug: text('slug').notNull(),
+    updatedAt: text('updated_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`),
+  },
+  (columns) => [
+    index('tags_name_idx').on(columns.name),
+    uniqueIndex('tags_slug_idx').on(columns.slug),
+    index('tags_updated_at_idx').on(columns.updatedAt),
+    index('tags_created_at_idx').on(columns.createdAt),
   ],
 )
 
@@ -287,6 +687,11 @@ export const payload_locked_documents_rels = sqliteTable(
     'admin-invitationsID': integer('admin_invitations_id'),
     mediaID: integer('media_id'),
     addressID: integer('address_id'),
+    educationsID: integer('educations_id'),
+    experiencesID: integer('experiences_id'),
+    blogsID: integer('blogs_id'),
+    categoriesID: integer('categories_id'),
+    tagsID: integer('tags_id'),
   },
   (columns) => [
     index('payload_locked_documents_rels_order_idx').on(columns.order),
@@ -301,6 +706,11 @@ export const payload_locked_documents_rels = sqliteTable(
     ),
     index('payload_locked_documents_rels_media_id_idx').on(columns.mediaID),
     index('payload_locked_documents_rels_address_id_idx').on(columns.addressID),
+    index('payload_locked_documents_rels_educations_id_idx').on(columns.educationsID),
+    index('payload_locked_documents_rels_experiences_id_idx').on(columns.experiencesID),
+    index('payload_locked_documents_rels_blogs_id_idx').on(columns.blogsID),
+    index('payload_locked_documents_rels_categories_id_idx').on(columns.categoriesID),
+    index('payload_locked_documents_rels_tags_id_idx').on(columns.tagsID),
     foreignKey({
       columns: [columns['parent']],
       foreignColumns: [payload_locked_documents.id],
@@ -340,6 +750,31 @@ export const payload_locked_documents_rels = sqliteTable(
       columns: [columns['addressID']],
       foreignColumns: [address.id],
       name: 'payload_locked_documents_rels_address_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['educationsID']],
+      foreignColumns: [educations.id],
+      name: 'payload_locked_documents_rels_educations_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['experiencesID']],
+      foreignColumns: [experiences.id],
+      name: 'payload_locked_documents_rels_experiences_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['blogsID']],
+      foreignColumns: [blogs.id],
+      name: 'payload_locked_documents_rels_blogs_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['categoriesID']],
+      foreignColumns: [categories.id],
+      name: 'payload_locked_documents_rels_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'payload_locked_documents_rels_tags_fk',
     }).onDelete('cascade'),
   ],
 )
@@ -446,6 +881,164 @@ export const relations_media = relations(media, ({ one }) => ({
   }),
 }))
 export const relations_address = relations(address, () => ({}))
+export const relations_educations = relations(educations, ({ one }) => ({
+  user: one(users, {
+    fields: [educations.user],
+    references: [users.id],
+    relationName: 'user',
+  }),
+}))
+export const relations_experiences = relations(experiences, ({ one }) => ({
+  user: one(users, {
+    fields: [experiences.user],
+    references: [users.id],
+    relationName: 'user',
+  }),
+}))
+export const relations_blogs_blocks_rich_text = relations(blogs_blocks_rich_text, ({ one }) => ({
+  _parentID: one(blogs, {
+    fields: [blogs_blocks_rich_text._parentID],
+    references: [blogs.id],
+    relationName: '_blocks_richText',
+  }),
+}))
+export const relations_blogs_blocks_image = relations(blogs_blocks_image, ({ one }) => ({
+  _parentID: one(blogs, {
+    fields: [blogs_blocks_image._parentID],
+    references: [blogs.id],
+    relationName: '_blocks_image',
+  }),
+  image: one(media, {
+    fields: [blogs_blocks_image.image],
+    references: [media.id],
+    relationName: 'image',
+  }),
+}))
+export const relations_blogs_blocks_code = relations(blogs_blocks_code, ({ one }) => ({
+  _parentID: one(blogs, {
+    fields: [blogs_blocks_code._parentID],
+    references: [blogs.id],
+    relationName: '_blocks_code',
+  }),
+}))
+export const relations_blogs_rels = relations(blogs_rels, ({ one }) => ({
+  parent: one(blogs, {
+    fields: [blogs_rels.parent],
+    references: [blogs.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [blogs_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [blogs_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_blogs = relations(blogs, ({ one, many }) => ({
+  _blocks_richText: many(blogs_blocks_rich_text, {
+    relationName: '_blocks_richText',
+  }),
+  _blocks_image: many(blogs_blocks_image, {
+    relationName: '_blocks_image',
+  }),
+  _blocks_code: many(blogs_blocks_code, {
+    relationName: '_blocks_code',
+  }),
+  author: one(users, {
+    fields: [blogs.author],
+    references: [users.id],
+    relationName: 'author',
+  }),
+  featuredImage: one(media, {
+    fields: [blogs.featuredImage],
+    references: [media.id],
+    relationName: 'featuredImage',
+  }),
+  _rels: many(blogs_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations__blogs_v_blocks_rich_text = relations(
+  _blogs_v_blocks_rich_text,
+  ({ one }) => ({
+    _parentID: one(_blogs_v, {
+      fields: [_blogs_v_blocks_rich_text._parentID],
+      references: [_blogs_v.id],
+      relationName: '_blocks_richText',
+    }),
+  }),
+)
+export const relations__blogs_v_blocks_image = relations(_blogs_v_blocks_image, ({ one }) => ({
+  _parentID: one(_blogs_v, {
+    fields: [_blogs_v_blocks_image._parentID],
+    references: [_blogs_v.id],
+    relationName: '_blocks_image',
+  }),
+  image: one(media, {
+    fields: [_blogs_v_blocks_image.image],
+    references: [media.id],
+    relationName: 'image',
+  }),
+}))
+export const relations__blogs_v_blocks_code = relations(_blogs_v_blocks_code, ({ one }) => ({
+  _parentID: one(_blogs_v, {
+    fields: [_blogs_v_blocks_code._parentID],
+    references: [_blogs_v.id],
+    relationName: '_blocks_code',
+  }),
+}))
+export const relations__blogs_v_rels = relations(_blogs_v_rels, ({ one }) => ({
+  parent: one(_blogs_v, {
+    fields: [_blogs_v_rels.parent],
+    references: [_blogs_v.id],
+    relationName: '_rels',
+  }),
+  categoriesID: one(categories, {
+    fields: [_blogs_v_rels.categoriesID],
+    references: [categories.id],
+    relationName: 'categories',
+  }),
+  tagsID: one(tags, {
+    fields: [_blogs_v_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations__blogs_v = relations(_blogs_v, ({ one, many }) => ({
+  parent: one(blogs, {
+    fields: [_blogs_v.parent],
+    references: [blogs.id],
+    relationName: 'parent',
+  }),
+  _blocks_richText: many(_blogs_v_blocks_rich_text, {
+    relationName: '_blocks_richText',
+  }),
+  _blocks_image: many(_blogs_v_blocks_image, {
+    relationName: '_blocks_image',
+  }),
+  _blocks_code: many(_blogs_v_blocks_code, {
+    relationName: '_blocks_code',
+  }),
+  version_author: one(users, {
+    fields: [_blogs_v.version_author],
+    references: [users.id],
+    relationName: 'version_author',
+  }),
+  version_featuredImage: one(media, {
+    fields: [_blogs_v.version_featuredImage],
+    references: [media.id],
+    relationName: 'version_featuredImage',
+  }),
+  _rels: many(_blogs_v_rels, {
+    relationName: '_rels',
+  }),
+}))
+export const relations_categories = relations(categories, () => ({}))
+export const relations_tags = relations(tags, () => ({}))
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
@@ -489,6 +1082,31 @@ export const relations_payload_locked_documents_rels = relations(
       references: [address.id],
       relationName: 'address',
     }),
+    educationsID: one(educations, {
+      fields: [payload_locked_documents_rels.educationsID],
+      references: [educations.id],
+      relationName: 'educations',
+    }),
+    experiencesID: one(experiences, {
+      fields: [payload_locked_documents_rels.experiencesID],
+      references: [experiences.id],
+      relationName: 'experiences',
+    }),
+    blogsID: one(blogs, {
+      fields: [payload_locked_documents_rels.blogsID],
+      references: [blogs.id],
+      relationName: 'blogs',
+    }),
+    categoriesID: one(categories, {
+      fields: [payload_locked_documents_rels.categoriesID],
+      references: [categories.id],
+      relationName: 'categories',
+    }),
+    tagsID: one(tags, {
+      fields: [payload_locked_documents_rels.tagsID],
+      references: [tags.id],
+      relationName: 'tags',
+    }),
   }),
 )
 export const relations_payload_locked_documents = relations(
@@ -529,6 +1147,20 @@ type DatabaseSchema = {
   admin_invitations: typeof admin_invitations
   media: typeof media
   address: typeof address
+  educations: typeof educations
+  experiences: typeof experiences
+  blogs_blocks_rich_text: typeof blogs_blocks_rich_text
+  blogs_blocks_image: typeof blogs_blocks_image
+  blogs_blocks_code: typeof blogs_blocks_code
+  blogs: typeof blogs
+  blogs_rels: typeof blogs_rels
+  _blogs_v_blocks_rich_text: typeof _blogs_v_blocks_rich_text
+  _blogs_v_blocks_image: typeof _blogs_v_blocks_image
+  _blogs_v_blocks_code: typeof _blogs_v_blocks_code
+  _blogs_v: typeof _blogs_v
+  _blogs_v_rels: typeof _blogs_v_rels
+  categories: typeof categories
+  tags: typeof tags
   payload_locked_documents: typeof payload_locked_documents
   payload_locked_documents_rels: typeof payload_locked_documents_rels
   payload_preferences: typeof payload_preferences
@@ -541,6 +1173,20 @@ type DatabaseSchema = {
   relations_admin_invitations: typeof relations_admin_invitations
   relations_media: typeof relations_media
   relations_address: typeof relations_address
+  relations_educations: typeof relations_educations
+  relations_experiences: typeof relations_experiences
+  relations_blogs_blocks_rich_text: typeof relations_blogs_blocks_rich_text
+  relations_blogs_blocks_image: typeof relations_blogs_blocks_image
+  relations_blogs_blocks_code: typeof relations_blogs_blocks_code
+  relations_blogs_rels: typeof relations_blogs_rels
+  relations_blogs: typeof relations_blogs
+  relations__blogs_v_blocks_rich_text: typeof relations__blogs_v_blocks_rich_text
+  relations__blogs_v_blocks_image: typeof relations__blogs_v_blocks_image
+  relations__blogs_v_blocks_code: typeof relations__blogs_v_blocks_code
+  relations__blogs_v_rels: typeof relations__blogs_v_rels
+  relations__blogs_v: typeof relations__blogs_v
+  relations_categories: typeof relations_categories
+  relations_tags: typeof relations_tags
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels
   relations_payload_locked_documents: typeof relations_payload_locked_documents
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels

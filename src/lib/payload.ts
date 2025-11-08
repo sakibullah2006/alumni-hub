@@ -1,4 +1,4 @@
 import configPromise from '@payload-config'
-import { getPayloadAuth } from 'payload-auth/better-auth'
+import { getPayload as getPayloadInstance } from 'payload'
 
-export const getPayload = async () => getPayloadAuth(configPromise)
+export const getPayload = async () => getPayloadInstance({ config: await configPromise })

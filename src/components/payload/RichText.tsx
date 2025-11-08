@@ -10,6 +10,17 @@ interface RichTextProps {
 export function RichText({ content, className = '' }: RichTextProps) {
   if (!content) return null
 
+  // Parse content if it's a JSON string
+  let parsedContent = content
+  if (typeof content === 'string') {
+    try {
+      parsedContent = JSON.parse(content)
+    } catch (error) {
+      console.error('Failed to parse RichText content:', error)
+      return <p className="text-red-500">Error: Invalid content format</p>
+    }
+  }
+
   const serializeLexical = (node: any): React.ReactNode => {
     if (!node) return null
 
@@ -67,7 +78,7 @@ export function RichText({ content, className = '' }: RichTextProps) {
 
       case 'quote':
         return (
-          <blockquote className="border-l-[3px] border-neutral-500 pl-5 py-2 mb-7 italic text-[21px] sm:text-[22px] leading-[1.65] text-neutral-600 font-serif font-normal">
+          <blockquote className="border-l-[3px] border-neutral-500 pl-5 py-2 mb-7 italic text-[18px] sm:text-[20px] leading-normal text-neutral-600 font-serif font-normal bg-neutral-100">
             {children}
           </blockquote>
         )
@@ -117,7 +128,7 @@ export function RichText({ content, className = '' }: RichTextProps) {
 
   return (
     <div className={`rich-text ${className}`}>
-      {serializeLexical(content.root || content)}
+      {serializeLexical(parsedContent.root || parsedContent)}
     </div>
   )
 }

@@ -16,6 +16,7 @@ import { Educations } from './collections/education/Educations'
 import { Blogs } from './collections/blog/Blogs'
 import { Categories } from './collections/category/Categories'
 import { Tags } from './collections/tag/Tags'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -26,6 +27,8 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    autoRefresh: true,
+    autoLogin: false,
   },
   collections: [
     Users,
@@ -48,6 +51,20 @@ export default buildConfig({
       // url: process.env.TURSO_DATABASE_URL || '',
       // authToken: process.env.TURSO_AUTH_TOKEN || ''
     },
+  }),
+  email: nodemailerAdapter({
+    defaultFromAddress: 'sakibullah582@gmail.com',
+    defaultFromName: 'Sakib - Developer',
+    // Nodemailer transportOptions
+    transportOptions: {
+      host: process.env.SMTP_HOST as string,
+      port: parseInt(process.env.SMTP_PORT || '587'),
+      // secure: process.env.SMTP_SECURE === 'true',
+      auth: {
+        user: process.env.SMTP_USER as string,
+        pass: process.env.SMTP_PASS as string,
+      }
+    }
   }),
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL,
   sharp,

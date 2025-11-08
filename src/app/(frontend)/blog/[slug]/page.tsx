@@ -13,6 +13,11 @@ interface PageProps {
 
 // Block content renderers
 function RichTextBlockRenderer({ content }: any) {
+  if (!content) {
+    console.warn('RichTextBlockRenderer: No content provided')
+    return null
+  }
+  
   return (
     <div className="my-6">
       <RichText content={content} />
@@ -42,10 +47,15 @@ function ImageBlockRenderer({ block }: any) {
 }
 
 function CodeBlockRenderer({ block }: any) {
+  if (!block || !block.code) {
+    console.warn('CodeBlockRenderer: No code content provided')
+    return null
+  }
+  
   return (
-    <div className="my-6">
+    <div className="my-6 relative">
       <pre className="bg-gray-900 text-white p-4 rounded-lg overflow-x-auto">
-        <code className={`language-${block.language}`}>{block.code}</code>
+        <code className={`language-${block.language || 'text'}`}>{block.code}</code>
       </pre>
     </div>
   )
@@ -68,28 +78,29 @@ async function BlogPage({ params }: PageProps) {
   const { slug } = await params
   const payload = await getPayload()
 
-  // Fetch the blog post by slug
-  const result = await payload.find({
-    collection: 'blogs',
-    where: {
-      slug: {
-        equals: slug,
+  try {
+    // Fetch the blog post by slug
+    const result = await payload.find({
+      collection: 'blogs',
+      where: {
+        slug: {
+          equals: slug,
+        },
+        status: {
+          equals: 'published',
+        }
       },
-      status: {
-        equals: 'published',
-      }
-    },
-    depth: 2, // Fetch related data (author, featured image, categories, tags)
-  })
+      depth: 2, // Fetch related data (author, featured image, categories, tags)
+    })
 
-  const blog = result.docs[0] as Blog | undefined
+    const blog = result.docs[0] as Blog | undefined
 
-  if (!blog) {
-    notFound()
-  }
+    if (!blog) {
+      notFound()
+    }
 
-  const author = blog.author as User
-  const featuredImage = blog.featuredImage as Media
+    const author = blog.author as User
+    const featuredImage = blog.featuredImage as Media
 
   return (
     <article className="max-w-3xl mx-auto px-4 py-12 ">
@@ -181,7 +192,21 @@ async function BlogPage({ params }: PageProps) {
         )}
       </div>
     </article>
-  )
+  ) 
+  } catch (error) {
+    console.error('Error loading blog post:', error)
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-12">
+        <h1 className="text-2xl font-bold text-red-600 mb-4">Error Loading Blog Post</h1>
+        <p className="text-gray-600">
+          There was an error loading this blog post. The content may be corrupted or improperly formatted.
+        </p>
+        <pre className="mt-4 p-4 bg-gray-100 rounded text-sm overflow-auto">
+          {error instanceof Error ? error.message : String(error)}
+        </pre>
+      </div>
+    )
+  }
 }
 
 export default BlogPage
